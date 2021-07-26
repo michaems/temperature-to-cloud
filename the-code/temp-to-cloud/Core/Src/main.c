@@ -40,7 +40,7 @@ int main(void)
   SystemClock_Config();
 
   MX_GPIO_Init();
-  //MX_ETH_Init();
+  MX_ETH_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
 
