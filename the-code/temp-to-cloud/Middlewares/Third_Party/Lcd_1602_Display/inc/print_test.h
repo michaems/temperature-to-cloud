@@ -1,8 +1,0 @@
-#ifndef THIRD_PARTY_LCD_1602_DISPLAY_INC_PRINT_TEST_H_
-#define THIRD_PARTY_LCD_1602_DISPLAY_INC_PRINT_TEST_H_
-
-#include "lcd_1602_display.h"
-
-void print_test(void);
-
-#endif /* THIRD_PARTY_LCD_1602_DISPLAY_INC_PRINT_TEST_H_ */

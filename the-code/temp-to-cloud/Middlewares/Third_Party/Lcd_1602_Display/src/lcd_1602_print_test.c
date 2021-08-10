@@ -1,6 +1,6 @@
-#include "print_test.h"
+#include "lcd_1602_print_test.h"
 
-void print_test(void)
+void lcd_1602_print_test(void)
 {
     char * line_1 = "Good Morning ...";
 	char * line_2 = "Hi There!";
