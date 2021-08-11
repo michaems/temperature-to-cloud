@@ -28,7 +28,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdio.h>
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_hal.h"
 
