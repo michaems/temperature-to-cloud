@@ -54,6 +54,7 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/Lcd_1602_Display/inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/DS1631_Temper_Sensor/inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/RTC/inc"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.614577022" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>

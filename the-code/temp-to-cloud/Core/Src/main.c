@@ -28,6 +28,7 @@
 #include "gpio.h"
 #include "temp_sensor_ds1631.h"
 #include "lcd_1602_display.h"
+#include "rtc_datetime_set_get.h"
 
 
 
@@ -36,6 +37,7 @@ void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 
 char temp[12];
+char date[12];
 
 /* USER CODE END 0 */
 
@@ -60,6 +62,16 @@ int main(void) {
 
 	lcd_1602_init();
 	lcd_1602_clear();
+
+	rtc_Set_DateTime();
+	rtc_Get_DateTime(temp, date);
+
+	lcd_1602_set_cursor(0, 0);
+	lcd_1602_send_string(temp);
+	lcd_1602_set_cursor(1, 0);
+	lcd_1602_send_string(date);
+	lcd_1602_delay_ms(5000);
+
 	while (1) {
 
 		memset(temp, 0, 12);
@@ -72,7 +84,6 @@ int main(void) {
 		lcd_1602_send_string(temp);
 		lcd_1602_send_string(" DEG CELCIUS");
 		HAL_Delay(1000);
-
 
 		//HAL_UART_Transmit(&huart3, (uint8_t*)time, 12, 1000);
 	}

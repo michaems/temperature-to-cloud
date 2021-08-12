@@ -40,11 +40,6 @@ extern RTC_HandleTypeDef hrtc;
 
 void MX_RTC_Init(void);
 
-/* USER CODE BEGIN Prototypes */
-void MX_RTC_Set_DateTime(void);
-void MX_RTC_Get_DateTime(char *time, char *date);
-/* USER CODE END Prototypes */
-
 #ifdef __cplusplus
 }
 #endif
