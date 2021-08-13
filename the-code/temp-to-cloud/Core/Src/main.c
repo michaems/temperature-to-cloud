@@ -29,6 +29,7 @@
 #include "temp_sensor_ds1631.h"
 #include "lcd_1602_display.h"
 #include "rtc_datetime_set_get.h"
+#include "save_to_flash.h"
 
 
 
@@ -60,32 +61,11 @@ int main(void) {
 	MX_RTC_Init();
 	MX_I2C2_Init();
 
-	lcd_1602_init();
-	lcd_1602_clear();
-
-	rtc_Set_DateTime();
-	rtc_Get_DateTime(temp, date);
-
-	lcd_1602_set_cursor(0, 0);
-	lcd_1602_send_string(temp);
-	lcd_1602_set_cursor(1, 0);
-	lcd_1602_send_string(date);
-	lcd_1602_delay_ms(5000);
+	uint32_t save_to_flash_data[4] = {0x5555, 0x5555, 0x5555, 0x5555};
 
 	while (1) {
-
-		memset(temp, 0, 12);
-
-		DS1631_ReadTemperature(temp);
-
-		lcd_1602_set_cursor(0, 0);
-		lcd_1602_send_string("THE TEMPERATURE IS");
-		lcd_1602_set_cursor(1, 0);
-		lcd_1602_send_string(temp);
-		lcd_1602_send_string(" DEG CELCIUS");
-		HAL_Delay(1000);
-
-		//HAL_UART_Transmit(&huart3, (uint8_t*)time, 12, 1000);
+		//SaveDataToFlash(save_to_flash_data, sizeof(save_to_flash_data)/4);
+		//HAL_Delay(300);
 	}
 
 }
