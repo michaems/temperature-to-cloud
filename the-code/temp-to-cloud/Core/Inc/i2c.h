@@ -47,8 +47,6 @@ void MX_I2C2_Init(void);
 }
 #endif
 
-void DS1631_ReadTemperature(char *temerature_str);
-
 #endif /* __I2C_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1,5 +1,5 @@
 #include "rtc_datetime_set_get.h"
-
+#include "stdio.h"
 
 void rtc_Set_DateTime(void) {
 	RTC_TimeTypeDef sTime = { 0 };

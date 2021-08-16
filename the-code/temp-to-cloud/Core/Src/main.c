@@ -20,33 +20,26 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "eth.h"
 #include "i2c.h"
+#include "lwip.h"
 #include "rtc.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
-#include "temp_sensor_ds1631.h"
-#include "lcd_1602_display.h"
-#include "rtc_datetime_set_get.h"
-#include "save_to_flash.h"
-
-
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 
-char temp[12];
-char date[12];
-
-/* USER CODE END 0 */
-
-/**
- * @brief  The application entry point.
- * @retval int
- */
 int main(void) {
+
+	/* Enable I-Cache---------------------------------------------------------*/
+	SCB_EnableICache();
+
+	/* Enable D-Cache---------------------------------------------------------*/
+	SCB_EnableDCache();
+
+	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
@@ -54,18 +47,28 @@ int main(void) {
 	/* Configure the system clock */
 	SystemClock_Config();
 
-    MX_GPIO_Init();
-	//MX_ETH_Init();
+	/* USER CODE BEGIN SysInit */
+
+	/* USER CODE END SysInit */
+
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
 	MX_USART3_UART_Init();
 	MX_USB_OTG_FS_PCD_Init();
 	MX_RTC_Init();
 	MX_I2C2_Init();
 
-	uint32_t save_to_flash_data[4] = {0x5555, 0x5555, 0x5555, 0x5555};
+	/* Init scheduler */
+	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
+	MX_FREERTOS_Init();
+	/* Start scheduler */
+	osKernelStart();
 
+	/* We should never get here as control is now taken by the scheduler */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	while (1) {
-		//SaveDataToFlash(save_to_flash_data, sizeof(save_to_flash_data)/4);
-		//HAL_Delay(300);
+
 	}
 
 }
@@ -99,6 +102,7 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.PLL.PLLN = 432;
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
 	RCC_OscInitStruct.PLL.PLLQ = 9;
+	RCC_OscInitStruct.PLL.PLLR = 2;
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
 		Error_Handler();
 	}

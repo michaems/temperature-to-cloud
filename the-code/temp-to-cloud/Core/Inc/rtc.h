@@ -26,7 +26,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stdio.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -39,6 +38,10 @@ extern RTC_HandleTypeDef hrtc;
 /* USER CODE END Private defines */
 
 void MX_RTC_Init(void);
+
+/* USER CODE BEGIN Prototypes */
+
+/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
