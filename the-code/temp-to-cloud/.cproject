@@ -53,6 +53,9 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/DS1631_Temper_Sensor/inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/RTC/inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/Save_To_Flash/inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/UDP_Client/inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FRTOS_Tasks/inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/Globals/inc"/>
 									<listOptionValue builtIn="false" value="../LWIP/App"/>
 									<listOptionValue builtIn="false" value="../LWIP/Target"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include"/>
@@ -99,9 +102,10 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="LWIP"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="LWIP"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="global_functions.c"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -197,9 +201,10 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="LWIP"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="LWIP"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="global_functions.c"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

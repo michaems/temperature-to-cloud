@@ -7,7 +7,7 @@ static  uint8_t DS1631_COMMAND_READ_TEMPERATURE = 0xAA;
 
 uint8_t received_data[2];
 
-void DS1631_ReadTemperature(char *temerature_str)
+void DS1631_ReadTemperature(char *temerature_str, int *tempr_fixed, int *tempr_flpart)
 {
 	memset(received_data, 0, 2);
 
@@ -23,5 +23,8 @@ void DS1631_ReadTemperature(char *temerature_str)
 
 	float tempr = (float)pr / 256;
 
-	sprintf(temerature_str, "%d.%d", (int)tempr, (int)((tempr - (int)tempr) * 10));
+	*tempr_fixed  = (int)(tempr);
+	*tempr_flpart = (int)((tempr - (int)tempr)*10);
+
+	sprintf(temerature_str, "%d.%d", *tempr_fixed, *tempr_flpart);
 }

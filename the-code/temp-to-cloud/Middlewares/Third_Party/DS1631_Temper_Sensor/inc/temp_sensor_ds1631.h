@@ -6,7 +6,7 @@
 #include "i2C.h"
 
 
-void DS1631_ReadTemperature(char *temerature_str);
+void DS1631_ReadTemperature(char *temerature_str, int *tempr_fixed, int *tempr_flpart);
 
 
 #endif /* THIRD_PARTY_DS1631_TEMPER_SENSOR_INC_TEMP_SENSOR_DS1631_H_ */

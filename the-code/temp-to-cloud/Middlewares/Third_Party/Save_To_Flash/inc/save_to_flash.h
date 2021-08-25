@@ -7,6 +7,7 @@
 void InitFlashSector(void);
 
 uint32_t SaveDataToFlash(uint32_t *data, uint8_t number_of_words);
+uint32_t ReadDataFromFlash(uint32_t *encoded_data);
 
 uint32_t CheckMemLimits(uint32_t current_memory_address);
 
