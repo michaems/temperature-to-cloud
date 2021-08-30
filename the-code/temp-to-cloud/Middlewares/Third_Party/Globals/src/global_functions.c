@@ -5,6 +5,8 @@ uint8_t ntp_time_acquired = 0;
 
 uint32_t sequence_number_for_saving_ops = 0;
 
+extern UART_HandleTypeDef huart3;
+
 void Set_Ntp_Time_Acquired_From_Time_Server(void)
 {
 	ntp_time_acquired = 1;
@@ -55,36 +57,85 @@ void DecodeByteArrayToData(uint32_t *encoded_data, struct tempr_sensor_data *tem
 
 uint8_t ConvertTimestampToString(const time_t timestmp, char *strTime, uint8_t str_len)
 {
-	struct tm *tme;
+	static struct tm *tme;
 
 	tme = localtime(&timestmp);
-	memset((void*)strTime, 0, str_len);
+
+	/* This function causes hardware fault - why? */
 	//strftime(strTime, str_len, "%d-%m-%y %X", (const struct tm*)tme);
+
 	sprintf(strTime,
 			"%02d-%02d-%d %02d:%02d:%02d",
 			tme->tm_mday, tme->tm_mon + 1,
 			tme->tm_year - 100 + 2000,
 			tme->tm_hour, tme->tm_min,
-			tme->tm_sec),
+			tme->tm_sec);
 
 	free((void *)tme);
+	tme = NULL;
 
 	return strlen(strTime);
 }
 
-void CraateAndDispatchWriteIndicatorMsg(void)
+uint8_t CreateTerminalMessage(const char * title, const struct tempr_sensor_data * sensor_data, struct user_message * msg)
 {
+	static char data_to_user[100] = {0};
+	static char date_and_time[20] = {0};
 
+	(void)ConvertTimestampToString(sensor_data->timestmp, date_and_time, sizeof(date_and_time));
+
+	sprintf(data_to_user, "%s | Record time %s Sequence number: %lu Temperature: %d.%d", title, date_and_time,
+			sensor_data->sequence_number, sensor_data->tempre_fixed, sensor_data->tempre_flpart);
+
+	msg->msg_type = MSG_TYPE_TERMINAL_MESSAGE;
+	msg->msg_duration_ms = 0;
+	memset((void *)msg->msg_txt, 0, sizeof(msg->msg_txt));
+	memcpy((void *)msg->msg_txt, (const void *)data_to_user, strlen(data_to_user));
+
+	return 0;
 }
 
-void CreateAndDispatchLcdDisplayMessage(void)
+uint8_t CreateLcdMessage(const struct tempr_sensor_data * sensor_data, struct user_message * msg)
 {
+	static char data_to_user[100] = {0};
+	static char date_and_time[20] = {0};
 
+	(void)ConvertTimestampToString(sensor_data->timestmp, date_and_time, sizeof(date_and_time));
+
+	memmove(&date_and_time[6], &date_and_time[7], strlen(date_and_time) - 6);
+	memmove(&date_and_time[6], &date_and_time[7], strlen(date_and_time) - 6);
+	date_and_time[14] = '\0';
+	sprintf(data_to_user, "%s#N:%lu C: %d.%d", date_and_time,
+			sensor_data->sequence_number, sensor_data->tempre_fixed, sensor_data->tempre_flpart);
+
+
+	msg->msg_duration_ms = (uint8_t)500;
+	msg->msg_type = MSG_TYPE_LCD_MESSAGE;
+
+	memset((void *)msg->msg_txt, 0, sizeof(msg->msg_txt));
+	memcpy((void *)msg->msg_txt, (const void *)data_to_user, strlen(data_to_user));
+
+	return 0;
 }
 
-void CreateAndDispatchTerminalMessage(void)
+void PrintMsgToLcd(const struct user_message * msg)
 {
+	static char lcd_line_1[16] = {0};
+	static char lcd_line_2[16] = {0};
 
+	int index_of_hash = (int) (strchr(msg->msg_txt, '#') - msg->msg_txt);
+	strncpy(lcd_line_1, msg->msg_txt, index_of_hash);
+
+	strncpy(lcd_line_2, msg->msg_txt + index_of_hash+1, strlen(msg->msg_txt) - index_of_hash);
+
+	lcd_1602_set_cursor(0, 0);
+	lcd_1602_send_string(lcd_line_1);
+	lcd_1602_set_cursor(1, 0);
+	lcd_1602_send_string(lcd_line_2);}
+
+void PrintMsgToTerminal(const struct user_message * received_msg)
+{
+	HAL_UART_Transmit(&huart3, (uint8_t *)received_msg->msg_txt, strlen(received_msg->msg_txt), 10000);
+	HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n\0", strlen("\r\n\0"), 1000);
+	HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n\0", strlen("\r\n\0"), 1000);
 }
-
-

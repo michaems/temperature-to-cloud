@@ -27,6 +27,7 @@
 #include "usb_otg.h"
 #include "gpio.h"
 #include "free_rtos_tasks.h"
+#include "lcd_1602_display.h"
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,6 +56,9 @@ int main(void)
 		MX_USB_OTG_FS_PCD_Init();
 		MX_RTC_Init();
 		MX_I2C2_Init();
+
+		lcd_1602_init();
+		lcd_1602_clear();
 
 		MX_FREERTOS_Init();
 
