@@ -62,8 +62,8 @@ void vMonitorAndSaveTemperatureSensorReadings(void *pvParameters)
 	static uint32_t encoded_data[2];
 	struct tempr_sensor_data tempr_data;
 
-	struct user_message terminal_msg;
-
+	static struct user_message terminal_msg;
+	static struct user_message led_msg;
 	for(;;)
 	{
 		DS1631_ReadTemperature(tempr, &tempr_data.tempre_fixed, &tempr_data.tempre_flpart);
@@ -81,9 +81,12 @@ void vMonitorAndSaveTemperatureSensorReadings(void *pvParameters)
 			SaveDataToFlash(encoded_data, ENCODED_DATA_SIZE_BYTES / sizeof(uint32_t));
 
 			CreateTerminalMessage("FLASH WRITE", &tempr_data, &terminal_msg);
+			CreateLedMessage(MSG_TYPE_WRITE_FLASH_BLUE_LED, &led_msg);
 
 			xQueueSend(ptrUserMessagesQueue, &terminal_msg, portMAX_DELAY);
+			xSemaphoreGive(handleSemaphoreForMessageQueue);
 
+			xQueueSend(ptrUserMessagesQueue, &led_msg, portMAX_DELAY);
 			xSemaphoreGive(handleSemaphoreForMessageQueue);
 
 			xSemaphoreGive(handleMutexForFlashMemoryReadWrite);
@@ -100,6 +103,7 @@ void vSendTemperatureDataToExternalNetowrk(void *pvParmerters)
 	static struct tempr_sensor_data tempr_data;
 	static struct user_message terminal_msg;
 	static struct user_message lcd_msg;
+	static struct user_message led_msg;
 	uint32_t read_status = HAL_ERROR;
 	uint32_t encoded_data[2] = {0};
 
@@ -117,11 +121,15 @@ void vSendTemperatureDataToExternalNetowrk(void *pvParmerters)
 
 				CreateTerminalMessage("FLASH READ", &tempr_data, &terminal_msg);
 				CreateLcdMessage(&tempr_data, &lcd_msg);
+				CreateLedMessage(MSG_TYPE_READ_FLASH_GREEN_LED, &led_msg);
 
 				xQueueSend(ptrUserMessagesQueue, &terminal_msg, portMAX_DELAY);
 				xSemaphoreGive(handleSemaphoreForMessageQueue);
 
 				xQueueSend(ptrUserMessagesQueue, &lcd_msg, portMAX_DELAY);
+				xSemaphoreGive(handleSemaphoreForMessageQueue);
+
+				xQueueSend(ptrUserMessagesQueue, &led_msg, portMAX_DELAY);
 				xSemaphoreGive(handleSemaphoreForMessageQueue);
 			}
 
@@ -151,6 +159,14 @@ void vReceiveAndPrintMessages(void *pvParmeters)
 				else if (received_msg.msg_type == MSG_TYPE_LCD_MESSAGE)
 				{
 					PrintMsgToLcd(&received_msg);
+				}
+				else if (received_msg.msg_type == MSG_TYPE_WRITE_FLASH_BLUE_LED)
+				{
+					BlinkBlueLed(&received_msg);
+				}
+				else if (received_msg.msg_type == MSG_TYPE_READ_FLASH_GREEN_LED)
+				{
+					BlinkGreenLed(&received_msg);
 				}
 				else
 				{

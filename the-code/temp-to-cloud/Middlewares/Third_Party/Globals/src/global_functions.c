@@ -88,7 +88,6 @@ uint8_t CreateTerminalMessage(const char * title, const struct tempr_sensor_data
 			sensor_data->sequence_number, sensor_data->tempre_fixed, sensor_data->tempre_flpart);
 
 	msg->msg_type = MSG_TYPE_TERMINAL_MESSAGE;
-	msg->msg_duration_ms = 0;
 	memset((void *)msg->msg_txt, 0, sizeof(msg->msg_txt));
 	memcpy((void *)msg->msg_txt, (const void *)data_to_user, strlen(data_to_user));
 
@@ -108,14 +107,38 @@ uint8_t CreateLcdMessage(const struct tempr_sensor_data * sensor_data, struct us
 	sprintf(data_to_user, "%s#N:%lu C: %d.%d", date_and_time,
 			sensor_data->sequence_number, sensor_data->tempre_fixed, sensor_data->tempre_flpart);
 
-
-	msg->msg_duration_ms = (uint8_t)500;
 	msg->msg_type = MSG_TYPE_LCD_MESSAGE;
 
 	memset((void *)msg->msg_txt, 0, sizeof(msg->msg_txt));
 	memcpy((void *)msg->msg_txt, (const void *)data_to_user, strlen(data_to_user));
 
 	return 0;
+}
+
+uint8_t CreateLedMessage(uint8_t msg_type, struct user_message * msg)
+{
+	uint8_t status = HAL_OK;
+
+	if (msg_type == MSG_TYPE_WRITE_FLASH_BLUE_LED)
+	{
+		msg->msg_type = MSG_TYPE_WRITE_FLASH_BLUE_LED;
+		msg->msg_on_duration_ms = 25;
+		msg->msg_off_duration_ms = 25;
+		msg->msg_repetition = 2;
+	}
+	else if (msg_type == MSG_TYPE_READ_FLASH_GREEN_LED)
+	{
+		msg->msg_type = MSG_TYPE_READ_FLASH_GREEN_LED;
+		msg->msg_on_duration_ms = 25;
+		msg->msg_off_duration_ms = 25;
+		msg->msg_repetition = 2;
+	}
+	else
+	{
+		status = HAL_ERROR;
+	}
+
+	return status;
 }
 
 void PrintMsgToLcd(const struct user_message * msg)
@@ -138,4 +161,26 @@ void PrintMsgToTerminal(const struct user_message * received_msg)
 	HAL_UART_Transmit(&huart3, (uint8_t *)received_msg->msg_txt, strlen(received_msg->msg_txt), 10000);
 	HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n\0", strlen("\r\n\0"), 1000);
 	HAL_UART_Transmit(&huart3, (uint8_t *)"\r\n\0", strlen("\r\n\0"), 1000);
+}
+
+void BlinkBlueLed(const struct user_message * msg)
+{
+	for (int i = 0; i < msg->msg_repetition; i++)
+	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_Delay(msg->msg_on_duration_ms);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_Delay(msg->msg_off_duration_ms);
+	}
+}
+
+void BlinkGreenLed(const struct user_message * msg)
+{
+	for (int i = 0; i < msg->msg_repetition; i++)
+	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+		HAL_Delay(msg->msg_on_duration_ms);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+		HAL_Delay(msg->msg_off_duration_ms);
+	}
 }
