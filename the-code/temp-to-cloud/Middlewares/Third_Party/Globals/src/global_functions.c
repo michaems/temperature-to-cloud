@@ -2,7 +2,6 @@
 #include "global_functions.h"
 
 uint8_t ntp_time_acquired = 0;
-
 uint32_t sequence_number_for_saving_ops = 0;
 
 extern UART_HandleTypeDef huart3;
@@ -61,8 +60,7 @@ uint8_t ConvertTimestampToString(const time_t timestmp, char *strTime, uint8_t s
 
 	tme = localtime(&timestmp);
 
-	/* This function causes hardware fault - why? */
-	//strftime(strTime, str_len, "%d-%m-%y %X", (const struct tm*)tme);
+	/* FYI: strftime() function causes hardware fault.*/
 
 	sprintf(strTime,
 			"%02d-%02d-%d %02d:%02d:%02d",
@@ -104,6 +102,7 @@ uint8_t CreateLcdMessage(const struct tempr_sensor_data * sensor_data, struct us
 	memmove(&date_and_time[6], &date_and_time[7], strlen(date_and_time) - 6);
 	memmove(&date_and_time[6], &date_and_time[7], strlen(date_and_time) - 6);
 	date_and_time[14] = '\0';
+
 	sprintf(data_to_user, "%s#N:%lu C: %d.%d", date_and_time,
 			sensor_data->sequence_number, sensor_data->tempre_fixed, sensor_data->tempre_flpart);
 

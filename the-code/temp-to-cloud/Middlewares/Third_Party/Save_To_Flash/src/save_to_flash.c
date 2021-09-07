@@ -89,7 +89,6 @@ uint32_t SaveDataToFlash(uint32_t *data, uint8_t number_of_words)
 
 void InitFlashSector(void)
 {
-
 	uint32_t data[number_of_words];
 
 	do
@@ -106,11 +105,9 @@ void InitFlashSector(void)
 			flash_sector_currently_available_address += (number_of_words * sizeof(uint32_t));
 		}
 
-
 	}while (data[0] != 0xFFFFFFFF);
 
 	sector_inited = 1;
-
 }
 
 uint32_t EraseFlashSector(void)
@@ -151,7 +148,6 @@ uint32_t CheckMemLimits(uint32_t current_memory_address)
 		flash_sector_currently_available_address = flash_sector_start_address;
 		sector_is_full = 1;
 		result = HAL_ERROR;
-
 	}
 
 	return result;

@@ -17,11 +17,9 @@ void FreeRTOS_InitTasks();
 
 void vProvideTimeFromTimeServer(void *pvParameters);
 
-void vMonitorNetworkConnectionStatus(void *pvParameters);
 void vMonitorAndSaveTemperatureSensorReadings(void *pvParameters);
 
 void vReceiveAndPrintMessages(void *pvParmeters);
-void vSendTemperatureDataToExternalNetowrk(void *pvParmerters);
-
+void vReadTemperatureData(void *pvParmerters);
 
 #endif /* THIRD_PARTY_FRTOS_TASKS_INC_FREE_RTOS_TASKS_H_ */

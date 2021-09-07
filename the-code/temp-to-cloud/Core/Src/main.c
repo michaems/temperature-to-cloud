@@ -37,42 +37,38 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
 	/* Enable I-Cache---------------------------------------------------------*/
-		SCB_EnableICache();
+	SCB_EnableICache();
 
-		/* Enable D-Cache---------------------------------------------------------*/
-		SCB_EnableDCache();
+	/* Enable D-Cache---------------------------------------------------------*/
+	SCB_EnableDCache();
 
-		/* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-		/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-		HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-		/* Configure the system clock */
-		SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-		/* Initialize all configured peripherals */
-		MX_GPIO_Init();
-		MX_USART3_UART_Init();
-		MX_USB_OTG_FS_PCD_Init();
-		MX_RTC_Init();
-		MX_I2C2_Init();
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_USART3_UART_Init();
+	MX_USB_OTG_FS_PCD_Init();
+	MX_RTC_Init();
+	MX_I2C2_Init();
 
-		lcd_1602_init();
-		lcd_1602_clear();
+	lcd_1602_init();
+	lcd_1602_clear();
 
-		MX_FREERTOS_Init();
+	MX_FREERTOS_Init();
 
-		//continue from here.
-		FreeRTOS_InitTasks();
+	FreeRTOS_InitTasks();
 
-		vTaskStartScheduler();
+	vTaskStartScheduler();
 
-		/* We should never get here as control is now taken by the scheduler */
-		/* Infinite loop */
-		/* USER CODE BEGIN WHILE */
-		while (1) {
+	while (1) {
 
-		}
+	}
 }
 
 /**
@@ -140,10 +136,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

@@ -6,14 +6,8 @@ SemaphoreHandle_t  handleMutexForFlashMemoryReadWrite;
 SemaphoreHandle_t  handleSemaphoreForMessageQueue;
 QueueHandle_t      ptrUserMessagesQueue;
 
-char data_A[100] = "*****SAVE_TEMPR_TO_FLASH: MUTEX AQCUIRED****\r\n\0";
-char data_B[100] = "*****READ_DATA_FROM_FLASH: MUTEX AQCUIRED****\r\n\0";
-
-
-
 void FreeRTOS_InitTasks()
 {
-
 	handleMutexForFlashMemoryReadWrite = xSemaphoreCreateMutex();
 
 	assert_param(handleMutexForFlashMemoryReadWrite);
@@ -22,7 +16,6 @@ void FreeRTOS_InitTasks()
 
 	assert_param(handleSemaphoreForMessageQueue);
 
-	//Creating queue to hold messages for the user
 	ptrUserMessagesQueue = xQueueCreate(25, sizeof(struct user_message));
 
 	assert_param(ptrUserMessagesQueue != NULL);
@@ -33,7 +26,7 @@ void FreeRTOS_InitTasks()
 		while(1);
 	}
 
-	if (xTaskCreate(vSendTemperatureDataToExternalNetowrk, "READ_DATA_FROM_FLASH",
+	if (xTaskCreate(vReadTemperatureData, "READ_DATA_FROM_FLASH",
 						128, NULL, tskIDLE_PRIORITY + 10, NULL) != pdPASS)
 	{
 		while(1);
@@ -43,15 +36,6 @@ void FreeRTOS_InitTasks()
 			128, NULL, tskIDLE_PRIORITY + 3, NULL) != pdPASS)
 	{
 		while(1);
-	}
-
-}
-
-void vMonitorNetworkConnectionStatus(void *pvParameters)
-{
-	for(;;)
-	{
-
 	}
 }
 
@@ -64,6 +48,7 @@ void vMonitorAndSaveTemperatureSensorReadings(void *pvParameters)
 
 	static struct user_message terminal_msg;
 	static struct user_message led_msg;
+
 	for(;;)
 	{
 		DS1631_ReadTemperature(tempr, &tempr_data.tempre_fixed, &tempr_data.tempre_flpart);
@@ -92,20 +77,21 @@ void vMonitorAndSaveTemperatureSensorReadings(void *pvParameters)
 			xSemaphoreGive(handleMutexForFlashMemoryReadWrite);
 		}
 
-		vTaskDelay(100);
+		vTaskDelay(10);
 
 	}
 }
 
 
-void vSendTemperatureDataToExternalNetowrk(void *pvParmerters)
+void vReadTemperatureData(void *pvParmerters)
 {
 	static struct tempr_sensor_data tempr_data;
 	static struct user_message terminal_msg;
 	static struct user_message lcd_msg;
 	static struct user_message led_msg;
-	uint32_t read_status = HAL_ERROR;
+
 	uint32_t encoded_data[2] = {0};
+	uint32_t read_status = HAL_ERROR;
 
 	for(;;)
 	{
@@ -136,7 +122,7 @@ void vSendTemperatureDataToExternalNetowrk(void *pvParmerters)
 			xSemaphoreGive(handleMutexForFlashMemoryReadWrite);
 		}
 
-		vTaskDelay(100);
+		vTaskDelay(10);
 	}
 }
 
@@ -149,7 +135,7 @@ void vReceiveAndPrintMessages(void *pvParmeters)
 	{
 		if (xQueueSemaphoreTake(handleSemaphoreForMessageQueue, 500/portTICK_PERIOD_MS) == pdTRUE)
 		{
-			//Get Mesaage from the queue
+			/*Get Mesaage from the queue*/
 			if (xQueueReceive(ptrUserMessagesQueue, &received_msg, portMAX_DELAY) == pdTRUE)
 			{
 				if (received_msg.msg_type == MSG_TYPE_TERMINAL_MESSAGE)
@@ -172,12 +158,10 @@ void vReceiveAndPrintMessages(void *pvParmeters)
 				{
 
 				}
-
 			}
-
 		}
 
-		vTaskDelay(100);
+		vTaskDelay(10);
 	}
 }
 
@@ -193,8 +177,7 @@ void vProvideTimeFromTimeServer(void *pvParameters)
 			vTaskDelay(1000);
 		}
 
-		HAL_UART_Transmit(&huart3, (uint8_t *)data_A, strlen(data_A), 1000);
-		vTaskDelay(600);
+		vTaskDelay(10);
 	}
 }
 

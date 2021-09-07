@@ -9,13 +9,10 @@
 
 #define MSG_TYPE_TERMINAL_MESSAGE 1
 #define MSG_TYPE_LCD_MESSAGE      2
-#define MSG_TYPE_LED_MESSAGE      3
 
 #define MSG_TYPE_READ_FLASH_GREEN_LED 31
 #define MSG_TYPE_WRITE_FLASH_BLUE_LED 32
 #define MSG_TYPE_ERROR_RED_LED        33
-
-
 
 /* 16 bytes or 128 bits*/
 static const uint8_t ENCODED_DATA_SIZE_BYTES = 8;
